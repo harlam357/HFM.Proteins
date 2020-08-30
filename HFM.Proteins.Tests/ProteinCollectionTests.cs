@@ -18,6 +18,12 @@ namespace HFM.Proteins
         }
 
         [Test]
+        public void ProteinCollection_Add_ThrowsWhenProteinIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ProteinCollection().Add(null));
+        }
+
+        [Test]
         public void ProteinCollection_ContainsKey_ReturnsFalseWhenTheCollectionIsEmpty()
         {
             // Arrange

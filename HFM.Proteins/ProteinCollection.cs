@@ -32,7 +32,11 @@ namespace HFM.Proteins
             }
         }
 
-        protected override int GetKeyForItem(Protein item) => item.ProjectNumber;
+        protected override int GetKeyForItem(Protein item)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            return item.ProjectNumber;
+        }
 
         /// <summary>
         /// Determines whether the <see cref="ProteinCollection" /> contains a <see cref="Protein"/> with the specified <paramref name="projectNumber"/>.
