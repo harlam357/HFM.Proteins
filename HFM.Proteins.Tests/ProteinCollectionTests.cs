@@ -13,16 +13,12 @@ namespace HFM.Proteins
     public class ProteinCollectionTests
     {
         [Test]
-        public void ProteinCollection_Ctor_ThrowsWhenProteinsIsNull()
-        {
-            _ = Assert.Throws<ArgumentNullException>(() => _ = new ProteinCollection(null));
-        }
+        public void ProteinCollection_Ctor_ThrowsWhenProteinsIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => new ProteinCollection(null));
 
         [Test]
-        public void ProteinCollection_Add_ThrowsWhenProteinIsNull()
-        {
-            _ = Assert.Throws<ArgumentNullException>(() => new ProteinCollection().Add(null));
-        }
+        public void ProteinCollection_Add_ThrowsWhenProteinIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => new ProteinCollection().Add(null));
 
         [Test]
         public void ProteinCollection_Contains_ReturnsFalseWhenTheCollectionIsEmpty()
@@ -118,10 +114,8 @@ namespace HFM.Proteins
         }
 
         [Test]
-        public void ProteinCollection_Update_ThrowsWhenProteinsIsNull()
-        {
-            _ = Assert.Throws<ArgumentNullException>(() => new ProteinCollection().Update(null));
-        }
+        public void ProteinCollection_Update_ThrowsWhenProteinsIsNull() =>
+            Assert.Throws<ArgumentNullException>(() => new ProteinCollection().Update(null));
 
         [Test]
         public void ProteinCollection_Update_ReturnsCollectionChanges()
@@ -209,15 +203,13 @@ namespace HFM.Proteins
             CollectionAssert.AreEqual(proteins, collection.ToList());
         }
 
-        private static ProteinCollection CreateCollectionForUpdate()
-        {
-            return new ProteinCollection
+        private static ProteinCollection CreateCollectionForUpdate() =>
+            new ProteinCollection
             {
                 CreateValidProtein(1),
                 CreateValidProtein(2),
                 CreateValidProtein(3)
             };
-        }
 
         private static List<Protein> CreateProteinsToUpdate()
         {
@@ -238,10 +230,15 @@ namespace HFM.Proteins
             return proteins;
         }
 
-        private static Protein CreateValidProtein(int projectNumber)
-        {
-            return new Protein { ProjectNumber = projectNumber, PreferredDays = 1, MaximumDays = 1, Credit = 1, Frames = 100 };
-        }
+        private static Protein CreateValidProtein(int projectNumber) =>
+            new Protein
+            {
+                ProjectNumber = projectNumber,
+                PreferredDays = 1,
+                MaximumDays = 1,
+                Credit = 1,
+                Frames = 100
+            };
 
         [Test]
         [Category(TestCategoryNames.Integration)]
