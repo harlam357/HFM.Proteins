@@ -244,7 +244,7 @@ namespace HFM.Proteins
         }
 
         [Test]
-        [Ignore("User example test using external resources")]
+        [Category(TestCategoryNames.Integration)]
         public void ProteinCollection_Ctor_FromProjectSummary()
         {
             // Arrange
@@ -260,8 +260,8 @@ namespace HFM.Proteins
         }
 
         [Test]
-        [Ignore("User example test using external resources")]
-        public async Task ProteinCollection_Create_FromProjectSummaryAsync()
+        [Category(TestCategoryNames.Integration)]
+        public async Task ProteinCollection_Ctor_FromProjectSummaryAsync()
         {
             // Arrange
             var client = new WebClient();
