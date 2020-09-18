@@ -39,15 +39,6 @@ namespace HFM.Proteins
         }
 
         /// <summary>
-        /// Determines whether the <see cref="ProteinCollection" /> contains a <see cref="Protein"/> with the specified <paramref name="projectNumber"/>.
-        /// </summary>
-        public bool ContainsKey(int projectNumber)
-        {
-            if (Dictionary is null) return false;
-            return Dictionary.ContainsKey(projectNumber);
-        }
-
-        /// <summary>
         /// Gets the <see cref="Protein"/> associated with the specified <paramref name="projectNumber"/>.
         /// </summary>
         public bool TryGetValue(int projectNumber, out Protein protein)
@@ -71,13 +62,15 @@ namespace HFM.Proteins
             var changes = new List<ProteinChange>();
             foreach (Protein protein in proteins.Where(Protein.IsValid))
             {
-                if (Dictionary != null && Dictionary.ContainsKey(protein.ProjectNumber))
+                if (Contains(protein.ProjectNumber))
                 {
-                    var propertyChanges = GetChangedProperties(Dictionary[protein.ProjectNumber], protein);
+                    Protein previous = this[protein.ProjectNumber];
+                    _ = Remove(previous);
+
+                    var propertyChanges = GetChangedProperties(previous, protein);
                     if (propertyChanges.Count > 0)
                     {
                         changes.Add(ProteinChange.Property(protein.ProjectNumber, propertyChanges));
-                        Dictionary[protein.ProjectNumber] = protein;
                     }
                     else
                     {
@@ -87,9 +80,9 @@ namespace HFM.Proteins
                 else
                 {
                     changes.Add(ProteinChange.Add(protein.ProjectNumber));
-                    Add(protein);
                 }
 
+                Add(protein);
             }
             return changes;
         }
