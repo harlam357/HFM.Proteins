@@ -17,7 +17,7 @@ stages:
 
     variables:
       solution: '**/*.sln'
-      buildProjects: **/*.csproj
+      buildProjects: '**/*.csproj'
       testProjects: '**/*.Tests.csproj'
       buildConfiguration: 'Release'
 
