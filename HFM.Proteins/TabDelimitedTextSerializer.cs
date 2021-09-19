@@ -63,7 +63,6 @@ namespace HFM.Proteins
         {
             try
             {
-                // Parse the current line from the CSV file
                 var p = new Protein();
                 string[] lineData = line.Split(new[] { '\t' }, StringSplitOptions.None);
                 p.ProjectNumber = Int32.Parse(lineData[0], CultureInfo.InvariantCulture);
@@ -80,7 +79,9 @@ namespace HFM.Proteins
                 p.KFactor = Double.Parse(lineData[11], CultureInfo.InvariantCulture);
                 return p;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 Debug.Assert(false);
             }
@@ -117,13 +118,9 @@ namespace HFM.Proteins
             }
         }
 
-        private static string WriteProtein(Protein protein)
-        {
-            // Project Number, Server IP, Work Unit Name, Number of Atoms, Preferred (days),
-            // Final Deadline (days), Credit, Frames, Code, Description, Contact, KFactor
-
-            return String.Format(CultureInfo.InvariantCulture,
-               "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}",
+        private static string WriteProtein(Protein protein) =>
+            String.Format(CultureInfo.InvariantCulture,
+                "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}",
                   /*  0 */ protein.ProjectNumber,
                   /*  1 */ protein.ServerIP,
                   /*  2 */ protein.WorkUnitName,
@@ -136,6 +133,5 @@ namespace HFM.Proteins
                   /*  9 */ protein.Description,
                   /* 10 */ protein.Contact,
                   /* 11 */ protein.KFactor);
-        }
     }
 }
