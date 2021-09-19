@@ -16,9 +16,8 @@
         /// <summary>
         /// Returns a new <see cref="Protein"/> object containing the data this object.
         /// </summary>
-        public Protein Copy()
-        {
-            return new Protein
+        public Protein Copy() =>
+            new Protein
             {
                 ProjectNumber = ProjectNumber,
                 ServerIP = ServerIP,
@@ -33,7 +32,6 @@
                 Contact = Contact,
                 KFactor = KFactor
             };
-        }
 
         /// <summary>
         /// Gets or sets the project number.
@@ -100,7 +98,7 @@
         /// </summary>
         public static bool IsValid(Protein protein)
         {
-            if (protein == null) return false;
+            if (protein is null) return false;
 
             return protein.ProjectNumber > 0 &&
                    protein.PreferredDays > 0 &&

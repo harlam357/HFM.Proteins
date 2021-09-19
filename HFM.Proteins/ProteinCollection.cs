@@ -24,7 +24,7 @@ namespace HFM.Proteins
         /// </summary>
         public ProteinCollection(IEnumerable<Protein> proteins)
         {
-            if (proteins == null) throw new ArgumentNullException(nameof(proteins));
+            if (proteins is null) throw new ArgumentNullException(nameof(proteins));
 
             foreach (Protein protein in proteins.Where(Protein.IsValid))
             {
@@ -34,7 +34,7 @@ namespace HFM.Proteins
 
         protected override int GetKeyForItem(Protein item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (item is null) throw new ArgumentNullException(nameof(item));
             return item.ProjectNumber;
         }
 
@@ -57,7 +57,7 @@ namespace HFM.Proteins
         /// <param name="proteins">The collection of <see cref="Protein"/> objects used to apply changes to this collection.</param>
         public IReadOnlyList<ProteinChange> Update(IEnumerable<Protein> proteins)
         {
-            if (proteins == null) throw new ArgumentNullException(nameof(proteins));
+            if (proteins is null) throw new ArgumentNullException(nameof(proteins));
 
             var changes = new List<ProteinChange>();
             foreach (Protein protein in proteins.Where(Protein.IsValid))
@@ -95,7 +95,7 @@ namespace HFM.Proteins
             {
                 object value1 = prop.GetValue(previous);
                 object value2 = prop.GetValue(current);
-                if (value1 == null || value2 == null)
+                if (value1 is null || value2 is null)
                 {
                     continue;
                 }

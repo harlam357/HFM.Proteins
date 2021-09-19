@@ -79,19 +79,15 @@ namespace HFM.Proteins
             {
                 return selected.Value<T>();
             }
-            return default(T);
+            return default;
         }
 
         [ExcludeFromCodeCoverage]
-        void IProteinCollectionSerializer.Serialize(Stream stream, ICollection<Protein> collection)
-        {
+        void IProteinCollectionSerializer.Serialize(Stream stream, ICollection<Protein> collection) =>
             throw new NotSupportedException("Serialization is not supported.");
-        }
 
         [ExcludeFromCodeCoverage]
-        Task IProteinCollectionSerializer.SerializeAsync(Stream stream, ICollection<Protein> collection)
-        {
+        Task IProteinCollectionSerializer.SerializeAsync(Stream stream, ICollection<Protein> collection) =>
             throw new NotSupportedException("Serialization is not supported.");
-        }
     }
 }

@@ -34,9 +34,7 @@ namespace HFM.Proteins
         /// Returns a string that represents the current <see cref="ProteinPropertyChange"/> object.
         /// </summary>
         /// <returns>A string that represents the current <see cref="ProteinPropertyChange"/> object.</returns>
-        public override string ToString()
-        {
-            return String.Format(CultureInfo.CurrentCulture, "{0}: {1} > {2}", PropertyName, Previous, Current);
-        }
+        public override string ToString() =>
+            String.Format(CultureInfo.CurrentCulture, "{0}: {1} > {2}", PropertyName, Previous, Current);
     }
 }

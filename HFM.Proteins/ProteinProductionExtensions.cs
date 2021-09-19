@@ -13,10 +13,8 @@ namespace HFM.Proteins
         /// <param name="protein"></param>
         /// <param name="frameTime">The work unit frame time.</param>
         /// <returns>The units per day for the work unit.</returns>
-        public static double GetUPD(this Protein protein, TimeSpan frameTime)
-        {
-            return ProductionCalculator.GetUPD(frameTime, protein.Frames);
-        }
+        public static double GetUPD(this Protein protein, TimeSpan frameTime) =>
+            ProductionCalculator.GetUPD(frameTime, protein.Frames);
 
         /// <summary>
         /// Gets the production bonus multiplier.
@@ -24,10 +22,8 @@ namespace HFM.Proteins
         /// <param name="protein"></param>
         /// <param name="unitTime">The overall unit completion time.</param>
         /// <returns>The production bonus multiplier.</returns>
-        public static double GetBonusMultiplier(this Protein protein, TimeSpan unitTime)
-        {
-            return ProductionCalculator.GetBonusMultiplier(protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
-        }
+        public static double GetBonusMultiplier(this Protein protein, TimeSpan unitTime) =>
+            ProductionCalculator.GetBonusMultiplier(protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
 
         /// <summary>
         /// Gets the credit measurement based the given work unit information and the unit completion time.
@@ -35,10 +31,8 @@ namespace HFM.Proteins
         /// <param name="protein"></param>
         /// <param name="unitTime">The overall unit completion time.</param>
         /// <returns>The credit for the work unit.</returns>
-        public static double GetBonusCredit(this Protein protein, TimeSpan unitTime)
-        {
-            return ProductionCalculator.GetBonusCredit(protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
-        }
+        public static double GetBonusCredit(this Protein protein, TimeSpan unitTime) =>
+            ProductionCalculator.GetBonusCredit(protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
 
         /// <summary>
         /// Gets the points per day measurement based the given frame time and work unit credit.
@@ -46,10 +40,8 @@ namespace HFM.Proteins
         /// <param name="protein"></param>
         /// <param name="frameTime">The work unit frame time.</param>
         /// <returns>The points per day for the work unit.</returns>
-        public static double GetPPD(this Protein protein, TimeSpan frameTime)
-        {
-            return ProductionCalculator.GetPPD(frameTime, protein.Frames, protein.Credit);
-        }
+        public static double GetPPD(this Protein protein, TimeSpan frameTime) =>
+            ProductionCalculator.GetPPD(frameTime, protein.Frames, protein.Credit);
 
         /// <summary>
         /// Gets the points per day measurement based the given frame time, work unit information, and the unit completion time.
@@ -58,10 +50,8 @@ namespace HFM.Proteins
         /// <param name="frameTime">The work unit frame time.</param>
         /// <param name="unitTime">The overall unit completion time.</param>
         /// <returns>The points per day for the work unit.</returns>
-        public static double GetBonusPPD(this Protein protein, TimeSpan frameTime, TimeSpan unitTime)
-        {
-            return ProductionCalculator.GetBonusPPD(frameTime, protein.Frames, protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
-        }
+        public static double GetBonusPPD(this Protein protein, TimeSpan frameTime, TimeSpan unitTime) =>
+            ProductionCalculator.GetBonusPPD(frameTime, protein.Frames, protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
 
         /// <summary>
         /// Gets all production measurements based the given frame time, work unit information, and the unit completion time.
@@ -70,9 +60,7 @@ namespace HFM.Proteins
         /// <param name="frameTime">The work unit frame time.</param>
         /// <param name="unitTime">The overall unit completion time.</param>
         /// <returns>The production measurements for the work unit.</returns> 
-        public static ProteinProduction GetProteinProduction(this Protein protein, TimeSpan frameTime, TimeSpan unitTime)
-        {
-            return ProductionCalculator.GetProteinProduction(frameTime, protein.Frames, protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
-        }
+        public static ProteinProduction GetProteinProduction(this Protein protein, TimeSpan frameTime, TimeSpan unitTime) =>
+            ProductionCalculator.GetProteinProduction(frameTime, protein.Frames, protein.Credit, protein.KFactor, protein.PreferredDays, protein.MaximumDays, unitTime);
     }
 }
