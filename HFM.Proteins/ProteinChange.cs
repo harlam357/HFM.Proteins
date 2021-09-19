@@ -44,7 +44,9 @@ namespace HFM.Proteins
         {
             ProjectNumber = projectNumber;
             Action = action;
-            PropertyChanges = propertyChanges as IReadOnlyList<ProteinPropertyChange> ?? propertyChanges?.ToList().AsReadOnly();
+            PropertyChanges = propertyChanges is IReadOnlyList<ProteinPropertyChange> readOnlyList
+                ? readOnlyList
+                : propertyChanges?.ToList().AsReadOnly();
         }
 
         /// <summary>
