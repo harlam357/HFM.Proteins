@@ -70,11 +70,12 @@ stages:
     pool:
       vmImage: 'windows-latest'
     environment: 'NuGet_org'
+    condition: eq(variables['build.sourceBranchName'], 'master')
     strategy:
       runOnce:
         deploy:
           steps:
-          - task: NuGetToolInstaller@1  
+          - task: NuGetToolInstaller@1
 
           - task: NuGetCommand@2
             inputs:
@@ -82,4 +83,3 @@ stages:
               packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
               nuGetFeedType: 'external'
               publishFeedCredentials: 'NuGet.org'
-
