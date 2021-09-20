@@ -75,12 +75,9 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: NuGetToolInstaller@1
-
-          - task: NuGetCommand@2
+          - task: DotNetCoreCLI@2
             inputs:
               command: 'push'
               packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
               nuGetFeedType: 'external'
               publishFeedCredentials: 'NuGet.org'
-              allowPackageConflicts: true
