@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
+using DeepEqual.Syntax;
+
 using NUnit.Framework;
 
 namespace HFM.Proteins
@@ -11,37 +13,63 @@ namespace HFM.Proteins
     [TestFixture]
     public class TabDelimitedTextSerializerTests
     {
+        private TabDelimitedTextSerializer _serializer;
+        private ICollection<Protein> _expected;
+
+        [OneTimeSetUp]
+        public void BeforeAll()
+        {
+            _serializer = new TabDelimitedTextSerializer();
+            using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
+            _expected = _serializer.DeserializeOld(stream);
+        }
+
+        [Test]
+        public void TabDelimitedTextSerializer_DeserializeOld_Test()
+        {
+            using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
+            var collection = _serializer.DeserializeOld(stream);
+
+            Assert.AreEqual(1409, collection.Count);
+            _expected.ShouldDeepEqual(collection);
+        }
+
         [Test]
         public void TabDelimitedTextSerializer_Deserialize_Test()
         {
-            var serializer = new TabDelimitedTextSerializer();
-            using (var stream = File.OpenRead("TestFiles\\ProjectInfo.tab"))
-            {
-                var collection = serializer.Deserialize(stream);
-                Assert.AreEqual(1409, collection.Count);
-            }
+            using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
+            var collection = _serializer.Deserialize(stream);
+
+            Assert.AreEqual(1409, collection.Count);
+            _expected.ShouldDeepEqual(collection);
+        }
+
+        [Test]
+        public async Task TabDelimitedTextSerializer_DeserializeAsyncOld_Test()
+        {
+            await using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
+            var collection = await _serializer.DeserializeAsyncOld(stream);
+
+            Assert.AreEqual(1409, collection.Count);
+            _expected.ShouldDeepEqual(collection);
         }
 
         [Test]
         public async Task TabDelimitedTextSerializer_DeserializeAsync_Test()
         {
-            var serializer = new TabDelimitedTextSerializer();
-            using (var stream = File.OpenRead("TestFiles\\ProjectInfo.tab"))
-            {
-                var collection = await serializer.DeserializeAsync(stream);
-                Assert.AreEqual(1409, collection.Count);
-            }
+            await using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
+            var collection = await _serializer.DeserializeAsync(stream);
+
+            Assert.AreEqual(1409, collection.Count);
+            _expected.ShouldDeepEqual(collection);
         }
 
         [Test]
         public void TabDelimitedTextSerializer_Deserialize_FromEmptyStream_Test()
         {
-            var serializer = new TabDelimitedTextSerializer();
-            using (var stream = new MemoryStream())
-            {
-                var proteins = serializer.Deserialize(stream);
-                Assert.AreEqual(0, proteins.Count);
-            }
+            using var stream = new MemoryStream();
+            var proteins = _serializer.Deserialize(stream);
+            Assert.AreEqual(0, proteins.Count);
         }
 
         [Test]
@@ -50,14 +78,12 @@ namespace HFM.Proteins
             var collection = CreateCollectionForSerialize();
 
             var buffer = new byte[256];
-            var serializer = new TabDelimitedTextSerializer();
-            using (var stream = new MemoryStream(buffer))
-            {
-                serializer.Serialize(stream, collection);
-                string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                Debug.WriteLine(text);
-                Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
-            }
+            using var stream = new MemoryStream(buffer);
+            _serializer.Serialize(stream, collection);
+
+            string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+            Debug.WriteLine(text);
+            Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
         }
 
         [Test]
@@ -66,49 +92,49 @@ namespace HFM.Proteins
             var collection = CreateCollectionForSerialize();
 
             var buffer = new byte[256];
-            var serializer = new TabDelimitedTextSerializer();
-            using (var stream = new MemoryStream(buffer))
-            {
-                await serializer.SerializeAsync(stream, collection);
-                string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                Debug.WriteLine(text);
-                Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
-            }
+            await using var stream = new MemoryStream(buffer);
+            await _serializer.SerializeAsync(stream, collection);
+
+            string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+            Debug.WriteLine(text);
+            Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
         }
 
         private static List<Protein> CreateCollectionForSerialize()
         {
-            var collection = new List<Protein>();
-            collection.Add(new Protein
+            var collection = new List<Protein>
             {
-                ProjectNumber = 6900,
-                ServerIP = "1.2.3.4",
-                WorkUnitName = "Name of Work Unit",
-                NumberOfAtoms = 10000,
-                PreferredDays = 3,
-                MaximumDays = 5,
-                Credit = 500,
-                Frames = 100,
-                Core = "GRO-A5",
-                Description = "http://something.com",
-                Contact = "me",
-                KFactor = 26.4
-            });
-            collection.Add(new Protein
-            {
-                ProjectNumber = 6901,
-                ServerIP = "5.6.7.8",
-                WorkUnitName = "Work Unit Name",
-                NumberOfAtoms = 78910,
-                PreferredDays = 4,
-                MaximumDays = 5,
-                Credit = 512,
-                Frames = 100,
-                Core = "GRO-A5",
-                Description = "http://somethingelse.com",
-                Contact = "you",
-                KFactor = 2
-            });
+                new()
+                {
+                    ProjectNumber = 6900,
+                    ServerIP = "1.2.3.4",
+                    WorkUnitName = "Name of Work Unit",
+                    NumberOfAtoms = 10000,
+                    PreferredDays = 3,
+                    MaximumDays = 5,
+                    Credit = 500,
+                    Frames = 100,
+                    Core = "GRO-A5",
+                    Description = "http://something.com",
+                    Contact = "me",
+                    KFactor = 26.4
+                },
+                new()
+                {
+                    ProjectNumber = 6901,
+                    ServerIP = "5.6.7.8",
+                    WorkUnitName = "Work Unit Name",
+                    NumberOfAtoms = 78910,
+                    PreferredDays = 4,
+                    MaximumDays = 5,
+                    Credit = 512,
+                    Frames = 100,
+                    Core = "GRO-A5",
+                    Description = "http://somethingelse.com",
+                    Contact = "you",
+                    KFactor = 2
+                }
+            };
             return collection;
         }
     }

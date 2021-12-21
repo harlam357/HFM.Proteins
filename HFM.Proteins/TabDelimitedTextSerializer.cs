@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using HFM.Proteins.Internal;
+
 namespace HFM.Proteins
 {
     /// <summary>
@@ -13,23 +15,56 @@ namespace HFM.Proteins
     /// </summary>
     public class TabDelimitedTextSerializer : IProteinCollectionSerializer
     {
+        internal ICollection<Protein> DeserializeOld(Stream stream)
+        {
+            var collection = new List<Protein>();
+            using var reader = new StreamReader(stream);
+
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                var p = ParseProteinOld(line);
+                if (Protein.IsValid(p))
+                {
+                    collection.Add(p);
+                }
+            }
+
+            return collection;
+        }
+
         /// <summary>
         /// Deserializes a collection of <see cref="Protein"/> objects from a <see cref="Stream"/>.
         /// </summary>
         public ICollection<Protein> Deserialize(Stream stream)
         {
             var collection = new List<Protein>();
+            using var reader = new StreamReader(stream);
 
-            using (var reader = new StreamReader(stream))
+            int bytesRead;
+            char[] unparsedChars = null;
+            Span<char> buffer = stackalloc char[1024];
+
+            while ((bytesRead = reader.Read(buffer)) != 0)
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                DeserializeProteins(buffer, bytesRead, ref unparsedChars, collection);
+            }
+
+            return collection;
+        }
+
+        internal async Task<ICollection<Protein>> DeserializeAsyncOld(Stream stream)
+        {
+            var collection = new List<Protein>();
+            using var reader = new StreamReader(stream);
+
+            string line;
+            while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
+            {
+                var p = ParseProteinOld(line);
+                if (Protein.IsValid(p))
                 {
-                    var p = ParseProtein(line);
-                    if (Protein.IsValid(p))
-                    {
-                        collection.Add(p);
-                    }
+                    collection.Add(p);
                 }
             }
 
@@ -42,24 +77,51 @@ namespace HFM.Proteins
         public async Task<ICollection<Protein>> DeserializeAsync(Stream stream)
         {
             var collection = new List<Protein>();
+            using var reader = new StreamReader(stream);
 
-            using (var reader = new StreamReader(stream))
+            int bytesRead;
+            char[] unparsedChars = null;
+            var buffer = new Memory<char>(new char[1024]);
+
+            while ((bytesRead = await reader.ReadAsync(buffer).ConfigureAwait(false)) != 0)
             {
-                string line;
-                while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
-                {
-                    var p = ParseProtein(line);
-                    if (Protein.IsValid(p))
-                    {
-                        collection.Add(p);
-                    }
-                }
+                DeserializeProteins(buffer.Span, bytesRead, ref unparsedChars, collection);
             }
 
             return collection;
         }
 
-        private static Protein ParseProtein(string line)
+        private static void DeserializeProteins(Span<char> buffer, int bytesRead, ref char[] unparsedChars, ICollection<Protein> collection)
+        {
+            foreach (var line in buffer[..bytesRead].SplitLines())
+            {
+                if (line.HasSeparator)
+                {
+                    ReadOnlySpan<char> lineToParse = line.Line;
+                    if (unparsedChars != null && unparsedChars.Length > 0)
+                    {
+                        lineToParse = unparsedChars.Concat(lineToParse);
+                        unparsedChars = null;
+                    }
+
+                    var p = ParseProtein(lineToParse);
+                    if (Protein.IsValid(p))
+                    {
+                        collection.Add(p);
+                    }
+                }
+                else
+                {
+                    unparsedChars = new char[line.Line.Length];
+                    for (int i = 0; i < line.Line.Length; i++)
+                    {
+                        unparsedChars[i] = line.Line[i];
+                    }
+                }
+            }
+        }
+
+        private static Protein ParseProteinOld(string line)
         {
             try
             {
@@ -77,6 +139,65 @@ namespace HFM.Proteins
                 p.Description = lineData[9];
                 p.Contact = lineData[10];
                 p.KFactor = Double.Parse(lineData[11], CultureInfo.InvariantCulture);
+                return p;
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception)
+#pragma warning restore CA1031 // Do not catch general exception types
+            {
+                Debug.Assert(false);
+            }
+            return null;
+        }
+
+        private static Protein ParseProtein(ReadOnlySpan<char> line)
+        {
+            try
+            {
+                int index = 0;
+                var p = new Protein();
+                foreach (var lineData in line.SplitTabs())
+                {
+                    switch (index++)
+                    {
+                        case 0:
+                            p.ProjectNumber = Int32.Parse(lineData, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case 1:
+                            p.ServerIP = lineData.Trim().ToString();
+                            break;
+                        case 2:
+                            p.WorkUnitName = lineData.Trim().ToString();
+                            break;
+                        case 3:
+                            p.NumberOfAtoms = Int32.Parse(lineData, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case 4:
+                            p.PreferredDays = Double.Parse(lineData, NumberStyles.Float, CultureInfo.InvariantCulture);
+                            break;
+                        case 5:
+                            p.MaximumDays = Double.Parse(lineData, NumberStyles.Float, CultureInfo.InvariantCulture);
+                            break;
+                        case 6:
+                            p.Credit = Double.Parse(lineData, NumberStyles.Float, CultureInfo.InvariantCulture);
+                            break;
+                        case 7:
+                            p.Frames = Int32.Parse(lineData, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case 8:
+                            p.Core = lineData.ToString();
+                            break;
+                        case 9:
+                            p.Description = lineData.ToString();
+                            break;
+                        case 10:
+                            p.Contact = lineData.ToString();
+                            break;
+                        case 11:
+                            p.KFactor = Double.Parse(lineData, NumberStyles.Float, CultureInfo.InvariantCulture);
+                            break;
+                    }
+                }
                 return p;
             }
 #pragma warning disable CA1031 // Do not catch general exception types
