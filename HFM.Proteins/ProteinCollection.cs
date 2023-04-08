@@ -32,21 +32,8 @@ public class ProteinCollection : KeyedCollection<int, Protein>
     protected override int GetKeyForItem(Protein item)
     {
         ArgumentNullException.ThrowIfNull(item);
-        
-        return item.ProjectNumber;
-    }
 
-    /// <summary>
-    /// Gets the <see cref="Protein"/> associated with the specified <paramref name="projectNumber"/>.
-    /// </summary>
-    public bool TryGetValue(int projectNumber, out Protein? protein)
-    {
-        if (Dictionary is null)
-        {
-            protein = null;
-            return false;
-        }
-        return Dictionary.TryGetValue(projectNumber, out protein);
+        return item.ProjectNumber;
     }
 
     /// <summary>
