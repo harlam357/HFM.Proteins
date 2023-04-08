@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace HFM.Proteins;
 
@@ -75,7 +73,7 @@ public class ProteinCollectionTests
         {
             CreateValidProtein(1),
             CreateValidProtein(2),
-            new Protein { ProjectNumber = 3 }
+            new() { ProjectNumber = 3 }
         };
         // Act
         var collection = new ProteinCollection(proteins);
@@ -93,7 +91,7 @@ public class ProteinCollectionTests
         {
             CreateValidProtein(1),
             CreateValidProtein(2),
-            new Protein { ProjectNumber = 3 }
+            new() { ProjectNumber = 3 }
         };
         var collection = new ProteinCollection();
         // Act
@@ -235,35 +233,35 @@ public class ProteinCollectionTests
             Frames = 100
         };
 
+    private static readonly HttpClient _HttpClient = new();
+
     [Test]
     [Category(TestCategoryNames.Integration)]
-    public void ProteinCollection_Ctor_FromProjectSummary()
+    public async Task ProteinCollection_Ctor_FromProjectSummary()
     {
-        // Arrange
-        var client = new WebClient();
-        using (var stream = new MemoryStream(client.DownloadData(ProjectSummaryUrl.Json)))
-        {
-            stream.Position = 0;
-            var deserializer = new ProjectSummaryJsonDeserializer();
-            var proteins = deserializer.Deserialize(stream);
-            var collection = new ProteinCollection(proteins);
-            Assert.IsTrue(collection.Count > 0);
-        }
+        var response = await _HttpClient.GetAsync(new Uri(ProjectSummaryUrl.Json));
+        response.EnsureSuccessStatusCode();
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        var deserializer = new ProjectSummaryJsonDeserializer();
+        var proteins = deserializer.Deserialize(stream);
+
+        var collection = new ProteinCollection(proteins);
+        Assert.IsTrue(collection.Count > 0);
     }
 
     [Test]
     [Category(TestCategoryNames.Integration)]
     public async Task ProteinCollection_Ctor_FromProjectSummaryAsync()
     {
-        // Arrange
-        var client = new WebClient();
-        using (var stream = new MemoryStream(await client.DownloadDataTaskAsync(ProjectSummaryUrl.Json)))
-        {
-            stream.Position = 0;
-            var deserializer = new ProjectSummaryJsonDeserializer();
-            var proteins = await deserializer.DeserializeAsync(stream);
-            var collection = new ProteinCollection(proteins);
-            Assert.IsTrue(collection.Count > 0);
-        }
+        var response = await _HttpClient.GetAsync(new Uri(ProjectSummaryUrl.Json));
+        response.EnsureSuccessStatusCode();
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        var deserializer = new ProjectSummaryJsonDeserializer();
+        var proteins = await deserializer.DeserializeAsync(stream);
+
+        var collection = new ProteinCollection(proteins);
+        Assert.IsTrue(collection.Count > 0);
     }
 }
