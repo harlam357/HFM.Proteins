@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
     <Authors>harlam357</Authors>
-    <Copyright>Copyright (C) 2020-2021 Ryan Harlamert (harlam357)</Copyright>
+    <Copyright>Copyright (C) 2020-2023 Ryan Harlamert (harlam357)</Copyright>
     <Description>Protein (project) API for Folding@Home</Description>
     <PackageTags>Folding@Home HFM Protein Project psummary</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
