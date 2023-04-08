@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 using DeepEqual.Syntax;
 
@@ -13,42 +9,22 @@ namespace HFM.Proteins
     [TestFixture]
     public class TabDelimitedTextSerializerTests
     {
-        private TabDelimitedTextSerializer _serializer;
-        private ICollection<Protein> _expected;
+        private TabDelimitedTextSerializer? _serializer;
+        private ICollection<Protein>? _expected;
 
         [OneTimeSetUp]
         public void BeforeAll()
         {
-            _serializer = new TabDelimitedTextSerializer();
+            _serializer = new();
             using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
-            _expected = _serializer.DeserializeOld(stream);
-        }
-
-        [Test]
-        public void TabDelimitedTextSerializer_DeserializeOld_Test()
-        {
-            using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
-            var collection = _serializer.DeserializeOld(stream);
-
-            Assert.AreEqual(1409, collection.Count);
-            _expected.ShouldDeepEqual(collection);
+            _expected = _serializer!.Deserialize(stream);
         }
 
         [Test]
         public void TabDelimitedTextSerializer_Deserialize_Test()
         {
             using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
-            var collection = _serializer.Deserialize(stream);
-
-            Assert.AreEqual(1409, collection.Count);
-            _expected.ShouldDeepEqual(collection);
-        }
-
-        [Test]
-        public async Task TabDelimitedTextSerializer_DeserializeAsyncOld_Test()
-        {
-            await using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
-            var collection = await _serializer.DeserializeAsyncOld(stream);
+            var collection = _serializer!.Deserialize(stream);
 
             Assert.AreEqual(1409, collection.Count);
             _expected.ShouldDeepEqual(collection);
@@ -58,7 +34,7 @@ namespace HFM.Proteins
         public async Task TabDelimitedTextSerializer_DeserializeAsync_Test()
         {
             await using var stream = File.OpenRead("TestFiles\\ProjectInfo.tab");
-            var collection = await _serializer.DeserializeAsync(stream);
+            var collection = await _serializer!.DeserializeAsync(stream);
 
             Assert.AreEqual(1409, collection.Count);
             _expected.ShouldDeepEqual(collection);
@@ -68,7 +44,7 @@ namespace HFM.Proteins
         public void TabDelimitedTextSerializer_Deserialize_FromEmptyStream_Test()
         {
             using var stream = new MemoryStream();
-            var proteins = _serializer.Deserialize(stream);
+            var proteins = _serializer!.Deserialize(stream);
             Assert.AreEqual(0, proteins.Count);
         }
 
@@ -79,10 +55,9 @@ namespace HFM.Proteins
 
             var buffer = new byte[256];
             using var stream = new MemoryStream(buffer);
-            _serializer.Serialize(stream, collection);
+            _serializer!.Serialize(stream, collection);
 
             string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-            Debug.WriteLine(text);
             Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
         }
 
@@ -93,10 +68,9 @@ namespace HFM.Proteins
 
             var buffer = new byte[256];
             await using var stream = new MemoryStream(buffer);
-            await _serializer.SerializeAsync(stream, collection);
+            await _serializer!.SerializeAsync(stream, collection);
 
             string text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-            Debug.WriteLine(text);
             Assert.IsTrue(text.Length > 0 && text.Length < buffer.Length);
         }
 

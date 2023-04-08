@@ -10,24 +10,6 @@ namespace HFM.Proteins;
 /// </summary>
 public class TabDelimitedTextSerializer : IProteinCollectionSerializer
 {
-    internal ICollection<Protein> DeserializeOld(Stream stream)
-    {
-        var collection = new List<Protein>();
-        using var reader = new StreamReader(stream);
-
-        string line;
-        while ((line = reader.ReadLine()) != null)
-        {
-            var p = ParseProteinOld(line);
-            if (Protein.IsValid(p))
-            {
-                collection.Add(p);
-            }
-        }
-
-        return collection;
-    }
-
     /// <summary>
     /// Deserializes a collection of <see cref="Protein"/> objects from a <see cref="Stream"/>.
     /// </summary>
@@ -43,24 +25,6 @@ public class TabDelimitedTextSerializer : IProteinCollectionSerializer
         while ((bytesRead = reader.Read(buffer)) != 0)
         {
             DeserializeProteins(buffer, bytesRead, ref unparsedChars, collection);
-        }
-
-        return collection;
-    }
-
-    internal async Task<ICollection<Protein>> DeserializeAsyncOld(Stream stream)
-    {
-        var collection = new List<Protein>();
-        using var reader = new StreamReader(stream);
-
-        string line;
-        while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
-        {
-            var p = ParseProteinOld(line);
-            if (Protein.IsValid(p))
-            {
-                collection.Add(p);
-            }
         }
 
         return collection;
@@ -114,35 +78,6 @@ public class TabDelimitedTextSerializer : IProteinCollectionSerializer
                 }
             }
         }
-    }
-
-    private static Protein ParseProteinOld(string line)
-    {
-        try
-        {
-            var p = new Protein();
-            string[] lineData = line.Split(new[] { '\t' }, StringSplitOptions.None);
-            p.ProjectNumber = Int32.Parse(lineData[0], CultureInfo.InvariantCulture);
-            p.ServerIP = lineData[1].Trim();
-            p.WorkUnitName = lineData[2].Trim();
-            p.NumberOfAtoms = Int32.Parse(lineData[3], CultureInfo.InvariantCulture);
-            p.PreferredDays = Double.Parse(lineData[4], CultureInfo.InvariantCulture);
-            p.MaximumDays = Double.Parse(lineData[5], CultureInfo.InvariantCulture);
-            p.Credit = Double.Parse(lineData[6], CultureInfo.InvariantCulture);
-            p.Frames = Int32.Parse(lineData[7], CultureInfo.InvariantCulture);
-            p.Core = lineData[8];
-            p.Description = lineData[9];
-            p.Contact = lineData[10];
-            p.KFactor = Double.Parse(lineData[11], CultureInfo.InvariantCulture);
-            return p;
-        }
-#pragma warning disable CA1031 // Do not catch general exception types
-        catch (Exception)
-#pragma warning restore CA1031 // Do not catch general exception types
-        {
-            Debug.Assert(false);
-        }
-        return null;
     }
 
     private static Protein ParseProtein(ReadOnlySpan<char> line)
