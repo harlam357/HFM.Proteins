@@ -18,7 +18,7 @@ public class TabDelimitedTextSerializerBenchmark
     {
         for (int i = 0; i < Cycles; i++)
         {
-            using var stream = new MemoryStream(_bytes);
+            using var stream = new MemoryStream(_bytes!);
             _ = _Serializer.Deserialize(stream);
         }
     }
@@ -28,7 +28,7 @@ public class TabDelimitedTextSerializerBenchmark
     {
         for (int i = 0; i < Cycles; i++)
         {
-            await using var stream = new MemoryStream(_bytes);
+            await using var stream = new MemoryStream(_bytes!);
             _ = await _Serializer.DeserializeAsync(stream);
         }
     }
