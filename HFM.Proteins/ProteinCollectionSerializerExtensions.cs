@@ -13,10 +13,8 @@ public static class ProteinCollectionSerializerExtensions
     /// </summary>
     public static ICollection<Protein> ReadFile(this IProteinCollectionSerializer serializer, string path)
     {
-        using (var stream = File.OpenRead(path))
-        {
-            return serializer.Deserialize(stream);
-        }
+        using var stream = File.OpenRead(path);
+        return serializer.Deserialize(stream);
     }
 
     /// <summary>
@@ -24,10 +22,8 @@ public static class ProteinCollectionSerializerExtensions
     /// </summary>
     public static async Task<ICollection<Protein>> ReadFileAsync(this IProteinCollectionSerializer serializer, string path)
     {
-        using (var stream = File.OpenRead(path))
-        {
-            return await serializer.DeserializeAsync(stream).ConfigureAwait(false);
-        }
+        using var stream = File.OpenRead(path);
+        return await serializer.DeserializeAsync(stream).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -36,13 +32,9 @@ public static class ProteinCollectionSerializerExtensions
     [ExcludeFromCodeCoverage]
     public static ICollection<Protein> ReadUri(this IProteinCollectionSerializer serializer, Uri address)
     {
-        using (var client = new WebClient())
-        {
-            using (var stream = client.OpenRead(address))
-            {
-                return serializer.Deserialize(stream);
-            }
-        }
+        using var client = new WebClient();
+        using var stream = client.OpenRead(address);
+        return serializer.Deserialize(stream);
     }
 
     /// <summary>
@@ -51,13 +43,9 @@ public static class ProteinCollectionSerializerExtensions
     [ExcludeFromCodeCoverage]
     public static async Task<ICollection<Protein>> ReadUriAsync(this IProteinCollectionSerializer serializer, Uri address)
     {
-        using (var client = new WebClient())
-        {
-            using (var stream = await client.OpenReadTaskAsync(address).ConfigureAwait(false))
-            {
-                return await serializer.DeserializeAsync(stream).ConfigureAwait(false);
-            }
-        }
+        using var client = new WebClient();
+        using var stream = await client.OpenReadTaskAsync(address).ConfigureAwait(false);
+        return await serializer.DeserializeAsync(stream).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -65,10 +53,8 @@ public static class ProteinCollectionSerializerExtensions
     /// </summary>
     public static void WriteFile(this IProteinCollectionSerializer serializer, string path, ICollection<Protein> values)
     {
-        using (var stream = File.Create(path))
-        {
-            serializer.Serialize(stream, values);
-        }
+        using var stream = File.Create(path);
+        serializer.Serialize(stream, values);
     }
 
     /// <summary>
@@ -76,9 +62,7 @@ public static class ProteinCollectionSerializerExtensions
     /// </summary>
     public static async Task WriteFileAsync(this IProteinCollectionSerializer serializer, string path, ICollection<Protein> values)
     {
-        using (var stream = File.Create(path))
-        {
-            await serializer.SerializeAsync(stream, values).ConfigureAwait(false);
-        }
+        using var stream = File.Create(path);
+        await serializer.SerializeAsync(stream, values).ConfigureAwait(false);
     }
 }
