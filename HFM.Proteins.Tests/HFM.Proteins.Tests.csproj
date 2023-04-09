@@ -6,7 +6,7 @@
     <RootNamespace>HFM.Proteins</RootNamespace>
     <Version>0.3.0</Version>
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
-    <NoWarn>$(NoWarn);CA1031;CA1052;CA1707;CA2007</NoWarn>
+    <NoWarn>$(NoWarn);CA1031;CA1052;CA1707;CA1849;CA2007</NoWarn>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\harlam357.snk</AssemblyOriginatorKeyFile>
     <StartupObject>HFM.Proteins.Benchmarks.Program</StartupObject>
