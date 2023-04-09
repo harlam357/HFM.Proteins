@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace HFM.Proteins;
 
@@ -43,39 +42,38 @@ public class ProjectSummaryJsonDeserializer : IProteinCollectionSerializer
         var collection = new List<Protein>();
         if (json.Length > 0)
         {
-            foreach (var token in JArray.Parse(json))
+            foreach (var node in JsonNode.Parse(json)!.AsArray())
             {
-                if (!token.HasValues)
+                if (node is null)
                 {
                     continue;
                 }
 
                 var p = new Protein();
-                p.ProjectNumber = GetTokenValue<int>(token, "id");
-                p.ServerIP = GetTokenValue<string>(token, "ws");
+                p.ProjectNumber = GetTokenValue<int>(node, "id");
+                p.ServerIP = GetTokenValue<string>(node, "ws");
                 p.WorkUnitName = @"p" + p.ProjectNumber;
-                p.NumberOfAtoms = GetTokenValue<int>(token, "atoms");
-                p.PreferredDays = Math.Round(GetTokenValue<int>(token, "timeout") / secondsToDays, 3, MidpointRounding.AwayFromZero);
-                p.MaximumDays = Math.Round(GetTokenValue<int>(token, "deadline") / secondsToDays, 3, MidpointRounding.AwayFromZero);
-                p.Credit = GetTokenValue<double>(token, "credit");
+                p.NumberOfAtoms = GetTokenValue<int>(node, "atoms");
+                p.PreferredDays = Math.Round(GetTokenValue<int>(node, "timeout") / secondsToDays, 3, MidpointRounding.AwayFromZero);
+                p.MaximumDays = Math.Round(GetTokenValue<int>(node, "deadline") / secondsToDays, 3, MidpointRounding.AwayFromZero);
+                p.Credit = GetTokenValue<double>(node, "credit");
                 p.Frames = 100;
-                p.Core = GetTokenValue<string>(token, "type");
+                p.Core = GetTokenValue<string>(node, "type");
                 p.Description = @"https://apps.foldingathome.org/project.py?p=" + p.ProjectNumber;
-                p.Contact = GetTokenValue<string>(token, "contact");
-                p.KFactor = 0.75;
+                p.Contact = GetTokenValue<string>(node, "contact");
+                p.KFactor = GetTokenValue<double?>(node, "bonus") ?? 0.75;
                 collection.Add(p);
             }
         }
         return collection;
     }
 
-    private static T? GetTokenValue<T>(JToken token, string path)
+    private static T? GetTokenValue<T>(JsonNode node, string path)
     {
-        for (var selected = token.SelectToken(path); selected != null;)
-        {
-            return selected.Value<T>();
-        }
-        return default;
+        var selected = node[path];
+        return selected is not null
+            ? selected.GetValue<T>()
+            : default;
     }
 
     [ExcludeFromCodeCoverage]

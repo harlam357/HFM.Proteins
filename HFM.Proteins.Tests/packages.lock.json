@@ -314,10 +314,7 @@
         "contentHash": "csAJe24tWCOTO/rXoJAuBGuOq7ZdHY60XtC6b/hNMHT9tuX+2J9HK7nciLEtNvnrRLMxBACLXO3R4y5+kCduMA=="
       },
       "hfm.proteins": {
-        "type": "Project",
-        "dependencies": {
-          "Newtonsoft.Json": "[11.0.1, )"
-        }
+        "type": "Project"
       }
     }
   }
