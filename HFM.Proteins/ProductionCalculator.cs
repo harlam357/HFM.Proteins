@@ -8,12 +8,12 @@ public static class ProductionCalculator
     private const int MaxDecimalPlaces = 5;
 
     /// <summary>
-    /// Gets the units per day measurement based the given frame time and number of frames.
+    /// Calculates the units per day measurement based the given frame time and number of frames.
     /// </summary>
     /// <param name="frameTime">The work unit frame time.</param>
     /// <param name="frames">The number of frames in the work unit.</param>
     /// <returns>The units per day for the work unit.</returns>
-    public static double GetUPD(TimeSpan frameTime, int frames)
+    public static double CalculateUnitsPerDay(TimeSpan frameTime, int frames)
     {
         double totalTime = frameTime.TotalSeconds * frames;
         if (totalTime <= 0.0)
@@ -24,14 +24,14 @@ public static class ProductionCalculator
     }
 
     /// <summary>
-    /// Gets the production bonus multiplier.
+    /// Calculates the production bonus multiplier.
     /// </summary>
     /// <param name="kFactor">The KFactor assigned to the work unit.</param>
     /// <param name="preferredDays">The preferred deadline (in decimal days).</param>
     /// <param name="maximumDays">The final deadline (in decimal days).</param>
     /// <param name="unitTime">The overall unit completion time.</param>
     /// <returns>The production bonus multiplier.</returns>
-    public static double GetBonusMultiplier(double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
+    public static double CalculateBonusMultiplier(double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
     {
         if (kFactor > 0 && unitTime > TimeSpan.Zero)
         {
@@ -44,7 +44,7 @@ public static class ProductionCalculator
     }
 
     /// <summary>
-    /// Gets the credit measurement based the given work unit information and the unit completion time.
+    /// Calculates the credit measurement based the given work unit information and the unit completion time.
     /// </summary>
     /// <param name="credit">The base credit assigned to the work unit.</param>
     /// <param name="kFactor">The KFactor assigned to the work unit.</param>
@@ -52,29 +52,29 @@ public static class ProductionCalculator
     /// <param name="maximumDays">The final deadline (in decimal days).</param>
     /// <param name="unitTime">The overall unit completion time.</param>
     /// <returns>The credit for the work unit.</returns>
-    public static double GetBonusCredit(double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
+    public static double CalculateBonusCredit(double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
     {
-        double bonusMulti = GetBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime);
+        double bonusMulti = CalculateBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime);
         return Math.Round(credit * bonusMulti, MaxDecimalPlaces);
     }
 
     /// <summary>
-    /// Gets the points per day measurement based the given frame time and work unit credit.
+    /// Calculates the points per day measurement based the given frame time and work unit credit.
     /// </summary>
     /// <param name="frameTime">The work unit frame time.</param>
     /// <param name="frames">The number of frames in the work unit.</param>
     /// <param name="credit">The base credit assigned to the work unit.</param>
     /// <returns>The points per day for the work unit.</returns>
-    public static double GetPPD(TimeSpan frameTime, int frames, double credit)
+    public static double CalculatePointsPerDay(TimeSpan frameTime, int frames, double credit)
     {
         if (frameTime.Equals(TimeSpan.Zero)) return 0;
 
-        double basePPD = GetUPD(frameTime, frames) * credit;
-        return Math.Round(basePPD, MaxDecimalPlaces);
+        double basePpd = CalculateUnitsPerDay(frameTime, frames) * credit;
+        return Math.Round(basePpd, MaxDecimalPlaces);
     }
 
     /// <summary>
-    /// Gets the points per day measurement based the given frame time, work unit information, and the unit completion time.
+    /// Calculates the points per day measurement based the given frame time, work unit information, and the unit completion time.
     /// </summary>
     /// <param name="frameTime">The work unit frame time.</param>
     /// <param name="frames">The number of frames in the work unit.</param>
@@ -84,17 +84,17 @@ public static class ProductionCalculator
     /// <param name="maximumDays">The final deadline (in decimal days).</param>
     /// <param name="unitTime">The overall unit completion time.</param>
     /// <returns>The points per day for the work unit.</returns>
-    public static double GetBonusPPD(TimeSpan frameTime, int frames, double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
+    public static double CalculateBonusPointsPerDay(TimeSpan frameTime, int frames, double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
     {
         if (frameTime.Equals(TimeSpan.Zero)) return 0;
 
-        double basePPD = GetUPD(frameTime, frames) * credit;
-        double bonusMulti = GetBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime);
-        return Math.Round(basePPD * bonusMulti, MaxDecimalPlaces);
+        double basePpd = CalculateUnitsPerDay(frameTime, frames) * credit;
+        double bonusMulti = CalculateBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime);
+        return Math.Round(basePpd * bonusMulti, MaxDecimalPlaces);
     }
 
     /// <summary>
-    /// Gets all protein production measurements based the given frame time, work unit information, and the unit completion time.
+    /// Calculates all protein production measurements based the given frame time, work unit information, and the unit completion time.
     /// </summary>
     /// <param name="frameTime">The work unit frame time.</param>
     /// <param name="frames">The number of frames in the work unit.</param>
@@ -104,12 +104,9 @@ public static class ProductionCalculator
     /// <param name="maximumDays">The final deadline (in decimal days).</param>
     /// <param name="unitTime">The overall unit completion time.</param>
     /// <returns>The production measurements for the work unit.</returns> 
-    public static ProteinProduction GetProteinProduction(TimeSpan frameTime, int frames, double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime)
-    {
-        return new ProteinProduction(
-            GetUPD(frameTime, frames),
-            GetBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime),
-            GetBonusCredit(credit, kFactor, preferredDays, maximumDays, unitTime),
-            GetBonusPPD(frameTime, frames, credit, kFactor, preferredDays, maximumDays, unitTime));
-    }
+    public static ProteinProduction CalculateProteinProduction(TimeSpan frameTime, int frames, double credit, double kFactor, double preferredDays, double maximumDays, TimeSpan unitTime) =>
+        new(CalculateUnitsPerDay(frameTime, frames),
+            CalculateBonusMultiplier(kFactor, preferredDays, maximumDays, unitTime),
+            CalculateBonusCredit(credit, kFactor, preferredDays, maximumDays, unitTime),
+            CalculateBonusPointsPerDay(frameTime, frames, credit, kFactor, preferredDays, maximumDays, unitTime));
 }

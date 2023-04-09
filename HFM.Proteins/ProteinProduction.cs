@@ -5,23 +5,23 @@
 /// </summary>
 public readonly struct ProteinProduction : IEquatable<ProteinProduction>
 {
-    public ProteinProduction(double upd, double multiplier, double credit, double ppd)
+    public ProteinProduction(double unitsPerDay, double bonusMultiplier, double credit, double pointsPerDay)
     {
-        UPD = upd;
-        Multiplier = multiplier;
+        UnitsPerDay = unitsPerDay;
+        BonusMultiplier = bonusMultiplier;
         Credit = credit;
-        PPD = ppd;
+        PointsPerDay = pointsPerDay;
     }
 
     /// <summary>
     /// Gets or sets the units per day (UPD) measurement.
     /// </summary>
-    public double UPD { get; }
+    public double UnitsPerDay { get; }
 
     /// <summary>
     /// Gets or sets the bonus multiplier measurement.
     /// </summary>
-    public double Multiplier { get; }
+    public double BonusMultiplier { get; }
 
     /// <summary>
     /// Gets or sets the work unit credit measurement.
@@ -31,9 +31,9 @@ public readonly struct ProteinProduction : IEquatable<ProteinProduction>
     /// <summary>
     /// Gets or sets the points per day (PPD) measurement.
     /// </summary>
-    public double PPD { get; }
+    public double PointsPerDay { get; }
 
-    public bool Equals(ProteinProduction other) => UPD.Equals(other.UPD) && Multiplier.Equals(other.Multiplier) && Credit.Equals(other.Credit) && PPD.Equals(other.PPD);
+    public bool Equals(ProteinProduction other) => UnitsPerDay.Equals(other.UnitsPerDay) && BonusMultiplier.Equals(other.BonusMultiplier) && Credit.Equals(other.Credit) && PointsPerDay.Equals(other.PointsPerDay);
 
     public override bool Equals(object? obj) => obj is ProteinProduction other && Equals(other);
 
@@ -41,10 +41,10 @@ public readonly struct ProteinProduction : IEquatable<ProteinProduction>
     {
         unchecked
         {
-            var hashCode = UPD.GetHashCode();
-            hashCode = (hashCode * 397) ^ Multiplier.GetHashCode();
+            var hashCode = UnitsPerDay.GetHashCode();
+            hashCode = (hashCode * 397) ^ BonusMultiplier.GetHashCode();
             hashCode = (hashCode * 397) ^ Credit.GetHashCode();
-            hashCode = (hashCode * 397) ^ PPD.GetHashCode();
+            hashCode = (hashCode * 397) ^ PointsPerDay.GetHashCode();
             return hashCode;
         }
     }
