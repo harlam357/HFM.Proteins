@@ -1,7 +1,6 @@
-﻿namespace HFM.Proteins
+﻿namespace HFM.Proteins;
+
+internal static class TestCategoryNames
 {
-    internal static class TestCategoryNames
-    {
-        internal const string Integration = nameof(Integration);
-    }
+    internal const string Integration = nameof(Integration);
 }

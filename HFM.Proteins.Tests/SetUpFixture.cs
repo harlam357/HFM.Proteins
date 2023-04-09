@@ -1,16 +1,11 @@
-﻿using System;
+﻿using NUnit.Framework;
 
-using NUnit.Framework;
+namespace HFM.Proteins;
 
-namespace HFM.Proteins
+[SetUpFixture]
+public class SetUpFixture
 {
-    [SetUpFixture]
-    public class SetUpFixture
-    {
-        [OneTimeSetUp]
-        public void SetEnvironmentCurrentDirectory()
-        {
-            Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
-        }
-    }
+    [OneTimeSetUp]
+    public void SetEnvironmentCurrentDirectory() =>
+        Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
 }
