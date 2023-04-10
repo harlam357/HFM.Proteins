@@ -1,4 +1,6 @@
-﻿namespace HFM.Proteins;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace HFM.Proteins;
 
 /// <summary>
 /// Represents Folding@Home project (protein) information.
@@ -96,7 +98,7 @@ public class Protein
     /// <summary>
     /// Returns true if this <see cref="Protein"/> has valid values for <see cref="ProjectNumber"/>, <see cref="PreferredDays"/>, <see cref="MaximumDays"/>, <see cref="Credit"/>, <see cref="Frames"/>, and <see cref="KFactor"/>; otherwise, false.
     /// </summary>
-    public static bool IsValid(Protein? protein)
+    public static bool IsValid([NotNullWhen(true)] Protein? protein)
     {
         if (protein is null) return false;
 
