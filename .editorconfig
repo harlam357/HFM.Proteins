@@ -15,15 +15,10 @@ indent_size = 2
 
 [*.{cs,vb}]
 
-# Default severity for analyzer diagnostics - Requires **VS2019 16.5** or later
+# Default severity for analyzer diagnostics
 dotnet_analyzer_diagnostic.severity = warning
-
-# CA1033: Interface methods should be callable by child types
-dotnet_diagnostic.CA1033.severity = none
-# CA1062: Validate arguments of public methods
-dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
-# CA1303: Do not pass literals as localized parameters
-dotnet_diagnostic.CA1303.severity = none
+# Default severity for analyzer diagnostics with category 'Style'
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
 
 indent_size = 4
 insert_final_newline = true
@@ -155,4 +150,13 @@ csharp_style_expression_bodied_operators = when_on_single_line:suggestion
 
 # Taking all Visual Studio defaults
 
-# Specific Code files
+###############################
+# Analyzer Rules              #
+###############################
+
+# CA1033: Interface methods should be callable by child types
+dotnet_diagnostic.CA1033.severity = none
+# CA1062: Validate arguments of public methods
+dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
