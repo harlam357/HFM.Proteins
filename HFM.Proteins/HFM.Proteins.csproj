@@ -12,7 +12,7 @@
     <Description>Protein (project) API for Folding@Home</Description>
     <PackageTags>Folding@Home HFM Protein Project psummary</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\HFM.Proteins.xml</DocumentationFile>
     <SignAssembly>true</SignAssembly>
